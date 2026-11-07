@@ -1,14 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'react'
 import { Link } from 'expo-router'
-
+import ThemedView from './components/ThemedView'
+import ThemedText from './components/ThemedText'
 
 const Contact = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Contact</Text>
-        <Link  style={[styles.link, {marginTop: 15}]} href="/">Home Page</Link>
-    </View>
+   <ThemedView style={[styles.container]}>
+      <ThemedText>Contact</ThemedText>
+        <Link  style={[styles.link, {marginTop: 15}]} href="/">
+            <ThemedText>Home Page</ThemedText>
+        </Link>
+    </ThemedView>
   )
 }
 
@@ -17,14 +20,12 @@ export default Contact
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#e9c4cc',
         alignItems: 'center',
         justifyContent: 'center',
     },
     title : {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#fff',
     },
     card: {
         backgroundColor: '#fff',

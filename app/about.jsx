@@ -1,18 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet } from 'react-native'
 import { Link } from 'expo-router'
-import { Colors } from '../constants/colors'
-import { useColorScheme } from 'react-native'
+import ThemedView from './components/ThemedView'
+import ThemedText from './components/ThemedText'
 
 
 const About = () => {
-    const colorScheme = useColorScheme()
-    const theme = Colors[colorScheme] ?? Colors.light
   return (
-    <View style={[styles.container, {backgroundColor: theme.background}]}>
-      <Text style={styles.title}>About</Text>
-        <Link  style={[styles.link, {marginTop: 15}]} href="/">Home Page</Link>
-    </View>
+    <ThemedView style={[styles.container]}>
+      <ThemedText>About</ThemedText>
+        <Link  style={[styles.link, {marginTop: 15}]} href="/">
+            <ThemedText>Home Page</ThemedText>
+        </Link>
+    </ThemedView>
   )
 }
 
@@ -21,7 +20,6 @@ export default About
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#e9c4cc',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -29,19 +27,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: '#fff',
-    },
-    card: {
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
     },
     link: {
         marginVertical: 10,
