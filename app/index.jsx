@@ -23,11 +23,11 @@ const Home = () => {
         <Button title='test'>Please Click</Button>
       </View>
 
-      <Link style={[styles.link, {marginTop: 15}]} href="/about">
-          <ThemedText>About Page</ThemedText>
+      <Link style={[styles.link, {marginTop: 15}]} href="/login">
+          <ThemedText>Login</ThemedText>
       </Link>
-      <Link style={[styles.link, {marginTop: 15}]} href="/contact">
-        <ThemedText>Contact Page</ThemedText>
+      <Link style={[styles.link, {marginTop: 15}]} href="/register">
+        <ThemedText>Register</ThemedText>
       </Link>
     </ThemedView>
   )
