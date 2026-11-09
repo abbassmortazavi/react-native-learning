@@ -1,8 +1,9 @@
-import { StatusBar, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'react'
 import { Stack } from 'expo-router'
 import { useColorScheme } from 'react-native'
 import { Colors } from '../constants/colors'
+import { StatusBar } from 'expo-status-bar'
 
 const RootLayout = () => {
   const colorScheme = useColorScheme()
@@ -15,9 +16,8 @@ const RootLayout = () => {
         headerTintColor: theme.title
       }}>
         <Stack.Screen name='index' options={{ title: 'Home' }} />
-        <Stack.Screen name='about' options={{ title: 'About' }} />
-        <Stack.Screen name='contact' options={{ title: 'Contact' }} />
-        <Stack.Screen name='(auth)' options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
       </Stack>
     </>
 
