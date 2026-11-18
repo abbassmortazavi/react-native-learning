@@ -1,4 +1,4 @@
-import {useState, createContext} from 'react'
+import { useState, createContext } from 'react'
 export const UserContext = createContext()
 import { API_URL } from '../constants/api'
 
@@ -6,7 +6,7 @@ import { API_URL } from '../constants/api'
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null)
 
-   async function login(email, password) {
+    async function login(email, password) {
         try {
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
@@ -15,15 +15,15 @@ export function UserProvider({ children }) {
                 },
                 body: JSON.stringify({ email, password }),
             });
-
-            console.log('login response:', response);
-
-
             const data = await response.json();
-            console.log('login data:', data);
-            setUser(data.user); 
+            console.log("login context", data)
+
+            if (!response.ok) {
+                throw new Error(data.error || data.message || 'Login failed');
+            }
+            setUser(data.user);
         } catch (error) {
-            console.error('Error during login:', error);
+           throw error
         }
     }
     async function logout() {
@@ -38,17 +38,13 @@ export function UserProvider({ children }) {
                 },
                 body: JSON.stringify({ email, password, name }),
             });
-
-            console.log('Registration response:', response);
-
-
             const data = await response.json();
-            console.log('Registration data:', data);
-            setUser(data.user); 
+            setUser(data.user);
         } catch (error) {
             console.error('Error during registration:', error);
+            throw Error(error.message)
         }
-       
+
     }
     return (
         <UserContext.Provider value={{ user, login, logout, register }}>

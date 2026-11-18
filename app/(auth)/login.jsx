@@ -1,5 +1,5 @@
-import { StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, TouchableWithoutFeedback, Keyboard, Text } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import ThemedView from '../../components/ThemedView'
 import ThemedText from '../../components/ThemedText'
 import ThemedTextInput from '../../components/ThemedTextInput'
@@ -7,19 +7,36 @@ import Spacer from '../../components/Spacer'
 import { Link } from 'expo-router'
 import ThemedButton from '../../components/ThemedButton'
 import { useUser } from '../../hooks/useUser'
+import { Colors } from '../../constants/colors'
+
 
 const Login = () => {
     const { user, login } = useUser()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+
+    useEffect(() => {
+        console.log('user changed:', user);
+    }, [user])
+
+
+
+
+
     const handelSubmit = async () => {
+        setError(null);
         try {
+            if (!email.trim() || !password) {
+                setError('Please enter email and password');
+                return;
+            }
             await login(email, password)
             console.log('login successful:', user)
         } catch (error) {
-            console.error('Error during login:', error)
+            setError(error.message)
         }
-       
+
     }
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -29,6 +46,8 @@ const Login = () => {
                     Login Page
                 </ThemedText>
 
+                {error && <Text style={styles.error}>{error}</Text>}
+                <Spacer />
 
                 <ThemedTextInput placeholder="ٍEmail"
                     style={{
@@ -94,4 +113,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 'bold'
     },
+    error: {
+        color: Colors.warning,
+        padding: 10,
+        backgroundColor: '#f5c1c8',
+        borderColor: Colors.warning,
+        borderWidth: 1,
+        borderRadius: 6,
+        marginHorizontal: 10
+    }
 })

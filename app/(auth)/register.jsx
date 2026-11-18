@@ -7,18 +7,20 @@ import { Link } from 'expo-router'
 import ThemedButton from '../../components/ThemedButton'
 import ThemedTextInput from '../../components/ThemedTextInput'
 import { useUser } from '../../hooks/useUser'
+import { Colors } from '../../constants/colors'
 
 const Register = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [name, setName] = useState('')
     const { user, register } = useUser()
+    const [error, setError] = useState('')
     const handelSubmit = async () => {
+        setError(null);
         try {
             await register(email, password, name)
-            console.log('Registration successful:', user)
         } catch (error) {
-            console.error('Error during registration:', error)
+            setError(error.message)
         }
     }
     return (
@@ -29,6 +31,8 @@ const Register = () => {
                 Register Page
             </ThemedText>
 
+            {error  && <Text style={styles.error}>{error}</Text>}
+            <Spacer/>
 
             <ThemedTextInput placeholder="ٍEmail"
                 style={{
@@ -95,6 +99,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 'bold'
     },
+    error: {
+        color: Colors.warning,
+        padding: 10,
+        backgroundColor: '#f5c1c8',
+        borderColor: Colors.warning,
+        borderWidth: 1,
+        borderRadius: 6,
+        marginHorizontal: 10
+    }
 })
 
 //7:33 =>15
