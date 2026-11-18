@@ -6,14 +6,20 @@ import Spacer from '../../components/Spacer'
 import { Link } from 'expo-router'
 import ThemedButton from '../../components/ThemedButton'
 import ThemedTextInput from '../../components/ThemedTextInput'
+import { useUser } from '../../hooks/useUser'
 
 const Register = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [name, setName] = useState('')
-    function handelSubmit() {
-        alert('register button pressed')
-        console.log('register button pressed')
+    const { user, register } = useUser()
+    const handelSubmit = async () => {
+        try {
+            await register(email, password, name)
+            console.log('Registration successful:', user)
+        } catch (error) {
+            console.error('Error during registration:', error)
+        }
     }
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -90,3 +96,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
 })
+
+//7:33 =>15

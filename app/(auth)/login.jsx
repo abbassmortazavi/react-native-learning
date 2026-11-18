@@ -12,10 +12,13 @@ const Login = () => {
     const { user, login } = useUser()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    function handelSubmit() {
-        console.log('Login button pressed', email, password)
-        login(email, password)
-        console.log('Current login function:', user)
+    const handelSubmit = async () => {
+        try {
+            await login(email, password)
+            console.log('login successful:', user)
+        } catch (error) {
+            console.error('Error during login:', error)
+        }
        
     }
     return (
