@@ -110,4 +110,4 @@ const styles = StyleSheet.create({
     }
 })
 
-//7:33 =>15
+//16 finished
