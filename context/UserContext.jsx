@@ -1,7 +1,9 @@
 import { useState, createContext, useEffect } from 'react'
+import * as SecureStore from 'expo-secure-store'
 export const UserContext = createContext()
 import { API_URL } from '../constants/api'
 
+const TOKEN_KEY = 'access_token'
 
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null)
@@ -9,7 +11,7 @@ export function UserProvider({ children }) {
     const [accessToken, setAccessToken] = useState(null);
     async function login(email, password) {
         try {
-            const response = await fetch(`${API_URL}/login`, {
+            const response = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -22,13 +24,14 @@ export function UserProvider({ children }) {
             }
             setUser(data.user);
             setAccessToken(data.token.access_token);
+            await SecureStore.setItemAsync(TOKEN_KEY, data.token.access_token);
         } catch (error) {
             throw error
         }
     }
     async function logout() {
         try {
-            const response = await fetch(`${API_URL}/logout`, {
+            const response = await fetch(`${API_URL}/auth/logout`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,11 +46,15 @@ export function UserProvider({ children }) {
             setUser(null)
         } catch (error) {
             throw error
+        } finally {
+            setUser(null);
+            setAccessToken(null);
+            await SecureStore.deleteItemAsync(TOKEN_KEY);
         }
     }
     async function register(email, password, name) {
         try {
-            const response = await fetch(`${API_URL}/register`, {
+            const response = await fetch(`${API_URL}/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -62,15 +69,29 @@ export function UserProvider({ children }) {
 
     }
     async function getInitializeUser() {
+
         try {
-            const res = await fetch(`${API_URL}/me`, {
+            const token = await SecureStore.getItemAsync(TOKEN_KEY);
+            if (!token) {
+                setUser(null);
+                return;
+            }
+            const res = await fetch(`${API_URL}/auth/me`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
             });
+            if (!res.ok) {
+                await SecureStore.deleteItemAsync(TOKEN_KEY)
+                setUser(null)
+                setAccessToken(null)
+                return
+            }
             const data = await res.json();
             setUser(data.user);
+            setAccessToken(token);
         } catch (error) {
             setUser(null);
             throw Error(error.message)
@@ -84,7 +105,7 @@ export function UserProvider({ children }) {
 
 
     return (
-        <UserContext.Provider value={{ user, login, logout, register, authChecked }}>
+        <UserContext.Provider value={{ user, login, logout, register, authChecked, accessToken }}>
             {children}
         </UserContext.Provider>
     )

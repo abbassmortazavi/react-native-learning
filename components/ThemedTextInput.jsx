@@ -2,11 +2,12 @@ import { StyleSheet, TextInput, useColorScheme } from 'react-native'
 import React from 'react'
 import { Colors } from '../constants/colors'
 
-const ThemedTextInput = ({style, ...props}) => {
+const ThemedTextInput = ({style, multiline, ...props}) => {
     const colorScheme = useColorScheme()
     const theme = Colors[colorScheme] ?? Colors.light
   return (
     <TextInput
+        multiline={multiline}
         style={[
             {
                 backgroundColor: theme.uiBackground,
