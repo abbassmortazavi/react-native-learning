@@ -1,4 +1,4 @@
-import  { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import { API_URL } from '../constants/api'
 import { useUser } from '../hooks/useUser'
 
@@ -11,26 +11,27 @@ export function BookProvider({ children }) {
     const [book, setBook] = useState(null)
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const {accessToken} = useUser();
-
-
-
-
+    const { accessToken } = useUser();
 
     async function lists() {
         try {
             const res = await fetch(`${API_URL}/books`, {
                 method: "GET",
                 headers: {
-                     'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
                 }
             });
             const data = await res.json();
-            if (!response.ok) {
+            console.log("data", data);
+            
+            if (!res.ok) {
                 throw new Error(data.error || data.message || 'fetch book is faild!!');
             }
-            setBooks(data.books)
+           setBooks(Array.isArray(data.books) ? data.books : []);
+            console.log("hiiiii: ", books);
             
+
         } catch (error) {
             throw error
         }
@@ -39,12 +40,12 @@ export function BookProvider({ children }) {
     async function getBook(id) {
         try {
             const res = await fetch(`${API_URL}/books/${id}`, {
-                 method: "GET",
+                method: "GET",
                 headers: {
-                     'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
                 }
             });
-             const data = await res.json();
+            const data = await res.json();
             if (!response.ok) {
                 throw new Error(data.error || data.message || 'fetch book is faild!!');
             }
@@ -53,7 +54,7 @@ export function BookProvider({ children }) {
         } catch (error) {
             throw error
         }
-        
+
     }
 
     async function createBook(bookData) {
@@ -71,7 +72,7 @@ export function BookProvider({ children }) {
             if (!res.ok) {
                 throw new Error(data.error || data.message || 'create book is faild!!');
             }
-            setBooks(prevBooks => [...prevBooks, data.book])
+            await lists();
         } catch (error) {
             throw error
         }
@@ -80,12 +81,12 @@ export function BookProvider({ children }) {
         try {
             const res = await fetch(`${API_URL}/books/${id}`, {
                 method: "DELETE",
-                 headers: {
+                headers: {
                     'Content-Type': 'application/json',
                 },
 
             });
-             const data = await res.json();
+            const data = await res.json();
             if (!response.ok) {
                 throw new Error(data.error || data.message || 'delete book is faild!!');
             }
@@ -93,8 +94,18 @@ export function BookProvider({ children }) {
         } catch (error) {
             throw error
         }
-        
+
     }
+
+    useEffect(() => {
+        if (!accessToken) {
+            setBooks([]);
+            return;
+        }
+        lists();
+
+
+    }, [accessToken])
 
     return (
         <BookContext.Provider value={{ books, lists, loading, error, getBook, deleteBook, createBook }}>
